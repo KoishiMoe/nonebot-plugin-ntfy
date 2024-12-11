@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "nonebot-plugin-ntfy"
+version = "0.1.0"
+description = ""
+authors = ["KoishiMoe <68314080+KoishiMoe@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+nonebot2 = ">=2.0.0b3"
+nonebot-adapter-onebot = ">=2.0.0b1"
+aiohttp = ">=3.8.1"
+nonebot-plugin-apscheduler = ">=0.5.0"
+pydantic = ">=2.0"
+pyyaml = ">=6.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
