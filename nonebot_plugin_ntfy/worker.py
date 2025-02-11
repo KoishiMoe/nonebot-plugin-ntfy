@@ -96,7 +96,12 @@ async def forward_ntfy_to_qq(data: Dict[str, Any], qq_targets: List[str]):
         mime = attachment.get("type", "")
         if url:
             if mime.startswith("image/") or mime.startswith("video/"):
-                file = await download_media(url)
+                url2 = url
+                for original_host, substitute_host in plugin_config.attachment_host_mapping.items():
+                    if url.startswith(original_host):
+                        url2 = url.replace(original_host, substitute_host)
+                        break
+                file = await download_media(url2)
                 if file:
                     if mime.startswith("image/"):
                         segments.append(MessageSegment.image(Path(file)))
@@ -120,6 +125,16 @@ async def forward_ntfy_to_qq(data: Dict[str, Any], qq_targets: List[str]):
             await asyncio.sleep(1)
         except Exception as e:
             plugin_logger.error(f"Error sending message to {target}: {e}")
+            if plugin_config.report_error:
+                for admin in bot.config.superusers:
+                    try:
+                        await bot.send_private_msg(
+                            user_id=int(admin),
+                            message=MessageSegment.text(f"Error sending message to {target}: {e}\nMessage: {content} Attachment: {attachment}"),
+                        )
+                    except Exception as e:
+                        plugin_logger.error(f"Error sending error report to {admin}: {e}")
+                    await asyncio.sleep(1)
 #
 # # Listener for QQ messages to forward to ntfy
 # @on_message()

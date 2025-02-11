@@ -44,6 +44,20 @@ class Config(BaseModel):
     #     description="Mappings from QQ groups/users to ntfy channels",
     # )
 
+    # substitute attachment host
+    # note: this only affects the bot's download / upload requests. If the bot decides to send the file's URL to the user, it will still use the original URL.
+    attachment_host_mapping: Dict[str, str] = Field(
+        default={
+            "https://cdn.example.com/": "https://cdn.example.org/",
+        },
+        description="Mappings from original attachment hosts to substitute hosts",
+    )
+
+    # should report to admin on msg send failure
+    report_error: bool = Field(
+        default=False, description="Report to admin on message send failure"
+    )
+
     @classmethod
     def load(cls) -> "Config":
         try:
